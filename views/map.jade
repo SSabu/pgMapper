@@ -5,13 +5,54 @@ block content
 
   script(type='text/javascript').
 
+         let resultString = !{JSON.stringify(result)};
+
+         let features = [];
+
+         resultString.rows.forEach( function(row) {
+          features.push({"type":"Feature", "geometry": JSON.parse(row.st_asgeojson)});
+         });
+
+         var geojsonObject = { "type" : "FeatureCollection", "crs" :  { "type" : "name" , "properties" : { "name" : "EPSG:4326" } }, "features" :  features };
+
+         var format = new ol.format.GeoJSON({
+          featureProjection :"EPSG:3857"
+         });
+
+         var vectorSource = new ol.source.Vector({
+          features: format.readFeatures(geojsonObject)
+         });
+
+         var styles = {
+          "MultiPolygon": new ol.style.Style({
+           stroke: new ol.style.Stroke({
+            color: "black",
+            width: 2
+           }),
+           fill: new ol.style.Fill({
+            color: "rgba(0,0,0,0)"
+           })
+          })
+         };
+
+         var styleFunction = function(feature) {
+          return styles[feature.getGeometry().getType()];
+         };
+
+         var vectorLayer = new ol.layer.Vector({
+          source: vectorSource,
+          style: styleFunction
+         });
+
          var osm = new ol.layer.Tile({source: new ol.source.OSM()})
 
          var map = new ol.Map({
-             layers: [osm],
+             layers: [osm, vectorLayer],
              target: 'map',
              view: new ol.View({
                  center: ol.proj.fromLonLat([-122.4497, 37.7590]),
                  zoom: 13
              })
          });
+
+         console.log('data', features);

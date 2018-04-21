@@ -15,7 +15,7 @@ const config = {
 
 //ST_AsGeoJSON(wkb_geometry)
 
-var query = "SELECT * FROM parks;";
+var query = "SELECT ST_AsGeoJSON(wkb_geometry) FROM parks;";
 
 var pool = new pg.Pool(config);
 
@@ -27,7 +27,7 @@ router.get('/', function(req, res, next) {
 
 /* GET Postgres JSON data */
 
-router.get('/data', function(req, res, next) {
+router.get('/map', function(req, res, next) {
   pool.connect(function(err, client, done) {
     if (err) {
       return console.error('error fetching client from pool', err);
@@ -38,15 +38,15 @@ router.get('/data', function(req, res, next) {
       if (err) {
         return console.error('error running query', err);
       }
-      res.send(result);
+      res.render('map', {result:result});
     });
   });
 });
 
 /* GET map page. */
 
-router.get('/map', function(req, res) {
-  res.render('map')
-});
+// router.get('/map', function(req, res) {
+//   res.render('map')
+// });
 
 module.exports = router;
