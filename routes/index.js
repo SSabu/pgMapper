@@ -1,23 +1,21 @@
-var express = require('express');
-var router = express.Router();
-var pg = require('pg');
+const express = require('express');
+const router = express.Router();
+const pg = require('pg');
+const env = require('dotenv').load();
+const url = require('url');
+const params = url.parse(process.env.DATABASE_URL);
+const auth = params.auth.split(':');
 
 const config = {
-  user: 'sandeepsabu',
-  database: 'postgis_test',
-  password: 'Tranny9Whorus',
-  port: 5432
+  user: auth[0],
+  password: auth[1],
+  database: params.pathname.split('/')[1],
+  port: params.port
 };
 
-// Setup connection
-// var username = "sandeepsabu";
-// var password = "Tranny9Whorus";
-// var host = "localhost";
-// var database = "postgis_test";
-// var port = "5432";
-// var conString = "postgres://"+host+"/"+database;
+//ST_AsGeoJSON(wkb_geometry)
 
-var query = "SELECT ST_AsGeoJSON(wkb_geometry) FROM parks;";
+var query = "SELECT * FROM parks;";
 
 var pool = new pg.Pool(config);
 
