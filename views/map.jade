@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  #map
+
+  script(type='text/javascript').
+
+         var osm = new ol.layer.Tile({source: new ol.source.OSM()})
+
+         var map = new ol.Map({
+             layers: [osm],
+             target: 'map',
+             view: new ol.View({
+                 center: ol.proj.fromLonLat([37.41, 8.82]),
+                 zoom: 4
+             })
+         });
