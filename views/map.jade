@@ -1,6 +1,14 @@
-extends layout
+doctype html
+html
+  head
+    link(rel='stylesheet', href='https://openlayers.org/en/v4.6.5/css/ol.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='https://openlayers.org/en/v4.6.5/build/ol.js')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    body
 
 block content
+  h1= title
   #map
 
   script(type='text/javascript').
@@ -35,6 +43,16 @@ block content
           })
          };
 
+         var iconStyle = new ol.style.Style({
+          image: new ol.style.Icon({
+           anchor: [0.5,0.5],
+           anchorXUnits: 'fraction',
+           anchorYUnits: 'pixels',
+           opacity: 0.75,
+           src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Map_marker_font_awesome.svg/50px-Map_marker_font_awesome.svg.png'
+          })
+         });
+
          var styleFunction = function(feature) {
           return styles[feature.getGeometry().getType()];
          };
@@ -55,7 +73,7 @@ block content
              })
          });
 
-         map.on('click', function(evt){
+         map.on('click', function(evt) {
 
           var lonlat = ol.proj.transform(evt.coordinate, 'EPSG:3857','EPSG:4326');
 
@@ -74,9 +92,17 @@ block content
 
              var nearGeojsonObject = { "type" : "FeatureCollection", "crs" :  { "type" : "name" , "properties" : { "name" : "EPSG:4326" } }, "features" :  nearestFeatures };
 
+             var icon = new ol.Feature(
+              new ol.geom.Point(evt.coordinate)
+             );
+
+             icon.setStyle(iconStyle);
+
              var newVectorSource = new ol.source.Vector({
               features: format.readFeatures(nearGeojsonObject)
              });
+
+             newVectorSource.addFeature(icon);
 
              var newVectorLayer = new ol.layer.Vector({
               source: newVectorSource,
@@ -86,6 +112,8 @@ block content
              vectorLayer.getSource().clear();
 
              map.addLayer(newVectorLayer);
+             map.getView().setCenter(ol.proj.fromLonLat(lonlat));
+             map.getView().setZoom(15);
 
            }
 

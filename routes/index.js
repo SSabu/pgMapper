@@ -13,16 +13,13 @@ const config = {
   port: params.port
 };
 
-//ST_AsGeoJSON(wkb_geometry)
-
 var query = "SELECT ST_AsGeoJSON(wkb_geometry) FROM parks;";
 
 var pool = new pg.Pool(config);
 
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'SF Park Finder' });
 });
 
 /* GET Postgres JSON data */
@@ -38,7 +35,7 @@ router.get('/map', function(req, res, next) {
       if (err) {
         return console.error('error running query', err);
       }
-      res.render('map', {result:result});
+      res.render('map', {title:'Click on map to locate nearby parks. Click refresh to reload parks.', result:result});
     });
   });
 });
