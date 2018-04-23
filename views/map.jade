@@ -55,4 +55,19 @@ block content
              })
          });
 
-         console.log('data', features);
+         map.on('click', function(evt){
+
+          var lonlat = ol.proj.transform(evt.coordinate, 'EPSG:3857','EPSG:4326');
+          console.log(lonlat[0], lonlat[1]);
+          $.ajax({
+           url: '/map',
+           type: 'POST',
+           data: {lonlat},
+           'content-type': 'application/text; charset=utf-8',
+           success: function(data) {
+            console.log('DATA', data);
+           }
+          })
+         });
+
+         console.log('data', resultString);

@@ -43,10 +43,28 @@ router.get('/map', function(req, res, next) {
   });
 });
 
-/* GET map page. */
+router.post('/map', function(req, res, next) {
 
-// router.get('/map', function(req, res) {
-//   res.render('map')
-// });
+  var coordinates = req.body['lonlat[]'];
+
+  let lon = Number(coordinates[0]);
+  let lat = Number(coordinates[1]);
+
+  let nearestQuery = "SELECT ST_AsGeoJSON(wkb_geometry) FROM parks ORDER BY wkb_geometry <-> ST_SetSRID(ST_MakePoint("+lon+","+lat+"), 4326) LIMIT 5;";
+
+  pool.connect(function(err, client, done) {
+    if (err) {
+      return console.error('error fetching client from pool', err);
+    }
+    console.log('connected to database again');
+    client.query(nearestQuery, function(err, data) {
+      done();
+      if (err) {
+        return console.error('error running query', err);
+      }
+      res.send(data);
+    });
+  });
+});
 
 module.exports = router;
