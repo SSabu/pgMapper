@@ -58,16 +58,37 @@ block content
          map.on('click', function(evt){
 
           var lonlat = ol.proj.transform(evt.coordinate, 'EPSG:3857','EPSG:4326');
-          console.log(lonlat[0], lonlat[1]);
+
           $.ajax({
            url: '/map',
            type: 'POST',
            data: {lonlat},
            'content-type': 'application/text; charset=utf-8',
            success: function(data) {
-            console.log('DATA', data);
-           }
-          })
-         });
 
-         console.log('data', resultString);
+             let nearestFeatures = [];
+
+             data.rows.forEach( function(row) {
+              nearestFeatures.push({"type":"Feature", "geometry": JSON.parse(row.st_asgeojson)});
+             });
+
+             var nearGeojsonObject = { "type" : "FeatureCollection", "crs" :  { "type" : "name" , "properties" : { "name" : "EPSG:4326" } }, "features" :  nearestFeatures };
+
+             var newVectorSource = new ol.source.Vector({
+              features: format.readFeatures(nearGeojsonObject)
+             });
+
+             var newVectorLayer = new ol.layer.Vector({
+              source: newVectorSource,
+              style: styleFunction
+             });
+
+             vectorLayer.getSource().clear();
+
+             map.addLayer(newVectorLayer);
+
+           }
+
+          })
+
+         });
