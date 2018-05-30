@@ -3,19 +3,18 @@ const app = express();
 const pg = require('pg');
 const env = require('dotenv').load();
 const url = require('url');
-// const params = url.parse(process.env.DATABASE_URL);
-// const auth = params.auth.split(':');
 
-// const config = {
-//   user: auth[0],
-//   password: auth[1],
-//   database: params.pathname.split('/')[1],
-//   port: params.port
-// };
+const config = {
+  user: 'sandeepsabu',
+  password: 'Spi9dlee6',
+  host: 'ssdbinstance.cs3dgspl0uzj.us-west-1.rds.amazonaws.com',
+  database: 'sfparks',
+  port: '5432'
+};
 
-const config = "postgres://sandeepsabu:Spi9dlee6@ssdbinstance.cs3dgspl0uzj.us-west-1.rds.amazonaws.com:5432/sfparks";
+// const config = "postgres://sandeepsabu:Spi9dlee6@ssdbinstance.cs3dgspl0uzj.us-west-1.rds.amazonaws.com:5432/sfparks";
 
-var query = "SELECT ST_AsGeoJSON(wkb_geometry) FROM parks;";
+var query = "SELECT ST_AsGeoJSON(wkb_geometry) FROM sfparks;";
 
 var pool = new pg.Pool(config);
 
@@ -49,7 +48,7 @@ app.post('/map', function(req, res, next) {
   let lon = Number(coordinates[0]);
   let lat = Number(coordinates[1]);
 
-  let nearestQuery = "SELECT ST_AsGeoJSON(wkb_geometry) FROM parks ORDER BY wkb_geometry <-> ST_SetSRID(ST_MakePoint("+lon+","+lat+"), 4326) LIMIT 5;";
+  let nearestQuery = "SELECT ST_AsGeoJSON(wkb_geometry) FROM sfparks ORDER BY wkb_geometry <-> ST_SetSRID(ST_MakePoint("+lon+","+lat+"), 4326) LIMIT 5;";
 
   pool.connect(function(err, client, done) {
     if (err) {
@@ -65,7 +64,5 @@ app.post('/map', function(req, res, next) {
     });
   });
 });
-
-// app.listen(3000, ()=>console.log('Server running on port 3000'));
 
 module.exports = app;
