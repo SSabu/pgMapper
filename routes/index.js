@@ -3,15 +3,17 @@ const app = express();
 const pg = require('pg');
 const env = require('dotenv').load();
 const url = require('url');
-const params = url.parse(process.env.DATABASE_URL);
-const auth = params.auth.split(':');
+// const params = url.parse(process.env.DATABASE_URL);
+// const auth = params.auth.split(':');
 
-const config = {
-  user: auth[0],
-  password: auth[1],
-  database: params.pathname.split('/')[1],
-  port: params.port
-};
+// const config = {
+//   user: auth[0],
+//   password: auth[1],
+//   database: params.pathname.split('/')[1],
+//   port: params.port
+// };
+
+const config = "postgres://sandeepsabu:Spi9dlee6@ssdbinstance.cs3dgspl0uzj.us-west-1.rds.amazonaws.com:5432/sfparks"; 
 
 var query = "SELECT ST_AsGeoJSON(wkb_geometry) FROM parks;";
 
