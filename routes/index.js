@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const app = express();
 const pg = require('pg');
 const env = require('dotenv').load();
 const url = require('url');
@@ -18,13 +18,13 @@ var query = "SELECT ST_AsGeoJSON(wkb_geometry) FROM parks;";
 var pool = new pg.Pool(config);
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+app.get('/', function(req, res, next) {
   res.render('index', { title: 'SF Park Finder' });
 });
 
 /* GET Postgres JSON data */
 
-router.get('/map', function(req, res, next) {
+app.get('/map', function(req, res, next) {
   pool.connect(function(err, client, done) {
     if (err) {
       return console.error('error fetching client from pool', err);
@@ -40,7 +40,7 @@ router.get('/map', function(req, res, next) {
   });
 });
 
-router.post('/map', function(req, res, next) {
+app.post('/map', function(req, res, next) {
 
   var coordinates = req.body['lonlat[]'];
 
@@ -64,4 +64,6 @@ router.post('/map', function(req, res, next) {
   });
 });
 
-module.exports = router;
+app.listen(3000, ()=>console.log('Server running on port 3000'));
+
+module.exports = app;
