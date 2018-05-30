@@ -13,7 +13,7 @@ const url = require('url');
 //   port: params.port
 // };
 
-const config = "postgres://sandeepsabu:Spi9dlee6@ssdbinstance.cs3dgspl0uzj.us-west-1.rds.amazonaws.com:5432/sfparks"; 
+const config = "postgres://sandeepsabu:Spi9dlee6@ssdbinstance.cs3dgspl0uzj.us-west-1.rds.amazonaws.com:5432/sfparks";
 
 var query = "SELECT ST_AsGeoJSON(wkb_geometry) FROM parks;";
 
@@ -66,6 +66,6 @@ app.post('/map', function(req, res, next) {
   });
 });
 
-app.listen(3000, ()=>console.log('Server running on port 3000'));
+// app.listen(3000, ()=>console.log('Server running on port 3000'));
 
 module.exports = app;
