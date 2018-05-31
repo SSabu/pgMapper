@@ -16,7 +16,7 @@ const config = "postgres://sandeepsabu:Spi9dlee6@ssdbinstance.cs3dgspl0uzj.us-we
 
 var query = "SELECT ST_AsGeoJSON(wkb_geometry) FROM sfparks;";
 
-var pool = new pg.Client(config);
+var pool = new pg.Pool(config);
 
 /* GET home page. */
 app.get('/', function(req, res, next) {
@@ -37,6 +37,7 @@ app.get('/map', function(req, res, next) {
         return console.error('error running query', err);
       }
       res.render('map', {title:'Click on map to locate nearby parks. Click refresh to reload parks.', result:result});
+      client.release();
     });
   });
 });
