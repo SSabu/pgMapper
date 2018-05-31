@@ -23,7 +23,7 @@ app.get('/', function(req, res, next) {
 
 /* GET Postgres JSON data */
 
-app.get('/map', function(req, res, next) {
+app.get('/map', function(req, res, next, config) {
 
   var client = new pg.Client(config);
 
