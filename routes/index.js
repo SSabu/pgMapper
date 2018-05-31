@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const pg = require('pg');
+const { Client } = require('pg');
 const env = require('dotenv').load();
 const url = require('url');
 
@@ -16,7 +16,7 @@ const config = "postgres://sandeepsabu:Spi9dlee6@ssdbinstance.cs3dgspl0uzj.us-we
 
 var query = "SELECT ST_AsGeoJSON(wkb_geometry) FROM sfparks;";
 
-var pool = new pg.Pool(config);
+var client = new Client(config);
 
 /* GET home page. */
 app.get('/', function(req, res, next) {
@@ -26,7 +26,7 @@ app.get('/', function(req, res, next) {
 /* GET Postgres JSON data */
 
 app.get('/map', function(req, res, next) {
-  pool.connect(function(err, client, done) {
+  client.connect(function(err, client, done) {
     if (err) {
       return console.error('error fetching client from pool', err);
     }
