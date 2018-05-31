@@ -14,7 +14,9 @@ const url = require('url');
 
 const config = "postgres://sandeepsabu:Spi9dlee6@ssdbinstance.cs3dgspl0uzj.us-west-1.rds.amazonaws.com:5432/sfparks";
 
-var query = "SELECT ST_AsGeoJSON(wkb_geometry) FROM sfparks;";
+const client = new pg.Client(config);
+
+const query = client.query("SELECT ST_AsGeoJSON(wkb_geometry) FROM sfparks;");
 
 /* GET home page. */
 app.get('/', function(req, res, next) {
@@ -24,12 +26,12 @@ app.get('/', function(req, res, next) {
 /* GET Postgres JSON data */
 
 app.get('/map', function(req, res, next) {
-  pg.connect(config, function(err, client, done) {
+  client.connect(function(err, done) {
     if (err) {
       return console.error('error fetching client from pool', err);
     }
     console.log('connected to database');
-    client.query(query, function(err, result) {
+    query.on(function(err, result) {
       done();
       if (err) {
         return console.error('error running query', err);
