@@ -26,10 +26,12 @@ app.get('/', function(req, res, next) {
 /* GET Postgres JSON data */
 
 app.get('/map', function(req, res, next) {
-  client.connect(function(err, done) {
-    if (err) {
-      return console.error('error fetching client from pool', err);
-    }
+  client.connect();
+
+    // function(err, done) {
+    // if (err) {
+    //   return console.error('error fetching client from pool', err);
+    // }
     console.log('connected to database');
     query.on(function(err, result) {
       done();
@@ -39,7 +41,6 @@ app.get('/map', function(req, res, next) {
       res.render('map', {title:'Click on map to locate nearby parks. Click refresh to reload parks.', result:result});
     });
   });
-});
 
 app.post('/map', function(req, res, next) {
 
