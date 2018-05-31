@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const { Client } = require('pg');
+const pg = require('pg');
 const env = require('dotenv').load();
 const url = require('url');
 
@@ -16,8 +16,6 @@ const config = "postgres://sandeepsabu:Spi9dlee6@ssdbinstance.cs3dgspl0uzj.us-we
 
 var query = "SELECT ST_AsGeoJSON(wkb_geometry) FROM sfparks;";
 
-var client = new Client(config);
-
 /* GET home page. */
 app.get('/', function(req, res, next) {
   res.render('index', { title: 'SF Park Finder' });
@@ -26,7 +24,7 @@ app.get('/', function(req, res, next) {
 /* GET Postgres JSON data */
 
 app.get('/map', function(req, res, next) {
-  client.connect(function(err, client, done) {
+  pg.connect(config, function(err, client, done) {
     if (err) {
       return console.error('error fetching client from pool', err);
     }
@@ -37,7 +35,6 @@ app.get('/map', function(req, res, next) {
         return console.error('error running query', err);
       }
       res.render('map', {title:'Click on map to locate nearby parks. Click refresh to reload parks.', result:result});
-      client.release();
     });
   });
 });
