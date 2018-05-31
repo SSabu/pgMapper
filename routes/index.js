@@ -4,13 +4,6 @@ const pg = require('pg');
 const env = require('dotenv').load();
 const url = require('url');
 
-const config = {
-  user: 'sandeepsabu',
-  password: 'Spi9dlee6',
-  host: 'ssdbinstance.cs3dgspl0uzj.us-west-1.rds.amazonaws.com',
-  database: 'sfparks',
-  port: 5432
-};
 
 // const config = "postgres://sandeepsabu:Spi9dlee6@ssdbinstance.cs3dgspl0uzj.us-west-1.rds.amazonaws.com:5432/sfparks";
 
@@ -23,7 +16,15 @@ app.get('/', function(req, res, next) {
 
 /* GET Postgres JSON data */
 
-app.get('/map', function(req, res, next, config) {
+app.get('/map', function(req, res, next) {
+
+  var config = {
+    user: 'sandeepsabu',
+    password: 'Spi9dlee6',
+    host: 'ssdbinstance.cs3dgspl0uzj.us-west-1.rds.amazonaws.com',
+    database: 'sfparks',
+    port: 5432
+  };
 
   var client = new pg.Client(config);
 
